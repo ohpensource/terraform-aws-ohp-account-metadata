@@ -3,7 +3,7 @@ locals {
     public_domain = {
       exposed_via = local.ssm
       configuration = {
-        ssm_parameter_name = "/${local.main_ssm_metadata["stage"]}/main/public-domain"
+        ssm_parameter_name = "/${local.main_ssm["stage"]}/main/public-domain"
       }
     }
   }
@@ -13,11 +13,12 @@ locals {
 }
 
 data "aws_ssm_parameter" "secondary" {
+  provider = aws.account
   for_each = local.secondary_ssm_map
   name     = each.value.ssm_parameter_name
 }
 
 locals {
-  secondary_ssm_values   = [for k in local.secondary_ssm_keys : data.aws_ssm_parameter.secondary[k].value]
-  secondary_ssm_metadata = zipmap(local.secondary_ssm_keys, local.secondary_ssm_values)
+  secondary_ssm_values = [for k in local.secondary_ssm_keys : data.aws_ssm_parameter.secondary[k].value]
+  secondary_ssm        = zipmap(local.secondary_ssm_keys, local.secondary_ssm_values)
 }

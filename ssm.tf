@@ -20,11 +20,12 @@ locals {
 }
 
 data "aws_ssm_parameter" "main" {
+  provider = aws.account
   for_each = local.main_ssm_map
   name     = each.value.ssm_parameter_name
 }
 
 locals {
-  main_ssm_values   = [for k in local.main_ssm_keys : data.aws_ssm_parameter.main[k].value]
-  main_ssm_metadata = zipmap(local.main_ssm_keys, local.main_ssm_values)
+  main_ssm_values = [for k in local.main_ssm_keys : data.aws_ssm_parameter.main[k].value]
+  main_ssm        = zipmap(local.main_ssm_keys, local.main_ssm_values)
 }
