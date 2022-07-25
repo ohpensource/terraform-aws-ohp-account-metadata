@@ -11,7 +11,7 @@ variable "stage" {
 variable "deployment" {
   type        = string
   default     = "main"
-  description = "Deployment of the resource, e.g. main, b, c, d"
+  description = "Deployment of the resource, e.g. main, b, c, d. Used only if baseline is deployment-specific"
 }
 
 variable "network" {

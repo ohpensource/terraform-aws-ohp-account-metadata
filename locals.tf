@@ -1,0 +1,3 @@
+locals {
+  deployment = "main"
+}
