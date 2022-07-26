@@ -43,5 +43,5 @@ output "cloudmap_read_only_policy_arn" {
 output "cloudmap_read_write_policy_arn" {
   description = "CloudMap read-write IAM policy ARN"
   value       = try(module.cloudmap[0].cloudmap_read_write_policy_arn, null)
-    sensitive   = true
+  sensitive   = true
 }
