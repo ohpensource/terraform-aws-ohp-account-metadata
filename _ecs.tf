@@ -8,7 +8,10 @@ locals {
 
 module "ecs" {
   count      = local.ecs.enable ? 1 : 0
-  source     = "./modules/ecs"
+  source     = "./baselines/ecs"
   stage      = local.ecs.stage
   deployment = local.ecs.deployment
+  providers = {
+    aws = aws.account
+  }
 }

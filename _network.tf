@@ -8,7 +8,10 @@ locals {
 
 module "network" {
   count      = local.network.enable ? 1 : 0
-  source     = "./modules/network"
+  source     = "./baselines/network"
   stage      = local.network.stage
   deployment = local.network.deployment
+  providers = {
+    aws = aws.account
+  }
 }

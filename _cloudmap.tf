@@ -8,9 +8,12 @@ locals {
 
 module "cloudmap" {
   count      = local.cloudmap.enable ? 1 : 0
-  source     = "./modules/cloudmap"
+  source     = "./baselines/cloudmap"
   stage      = local.cloudmap.stage
   deployment = local.cloudmap.deployment
+  providers = {
+    aws = aws.account
+  }
 }
 
 output "cloudmap_namespace_id" {
@@ -41,4 +44,4 @@ output "cloudmap_read_write_policy_arn" {
   description = "CloudMap read-write IAM policy ARN"
   value       = try(module.cloudmap[0].cloudmap_read_write_policy_arn, null)
     sensitive   = true
-  }
+}
