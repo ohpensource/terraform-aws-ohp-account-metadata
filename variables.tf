@@ -17,7 +17,7 @@ variable "deployment" {
 variable "network" {
   description = "Return outputs from network baseline"
   default     = {
-    enable     = true
+    enable     = false
     stage      = null
     deployment = null
   }
@@ -26,7 +26,7 @@ variable "network" {
 variable "ecs" {
   description = "Return outputs from ECS baseline"
   default     = {
-    enable     = true
+    enable     = false
     stage      = null
     deployment = null
   }
@@ -35,7 +35,7 @@ variable "ecs" {
 variable "cloudmap" {
   description = "Return outputs from CloudMap baseline"
   default     = {
-    enable     = true
+    enable     = false
     stage      = null
     deployment = null
   }

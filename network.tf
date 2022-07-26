@@ -1,6 +1,6 @@
 locals {
   network = {
-    enable     = try(var.network.enable, true)
+    enable     = try(var.network.enable, false)
     stage      = coalesce(try(var.network.stage, var.stage), var.stage)
     deployment = coalesce(try(var.network.deployment, local.deployment), local.deployment) # Use main unless overridden by baseline-specific variable
   }
