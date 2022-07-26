@@ -1,7 +1,7 @@
 locals {
   ecs = {
     enable     = try(var.ecs.enable, false)
-    stage      = coalesce(try(var.ecs.stage, var.stage), var.stage)
+    stage      = coalesce(try(var.ecs.stage, var.stage), local.stage)
     deployment = coalesce(try(var.ecs.deployment, local.deployment), local.deployment) # Use main unless overridden by baseline-specific variable
   }
 }

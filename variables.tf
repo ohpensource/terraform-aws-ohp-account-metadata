@@ -6,6 +6,7 @@ variable "aws_account_id" {
 variable "stage" {
   type        = string
   description = "Stage of the outputs, e.g. dev, tst, acc, prd"
+  default     = null
 }
 
 variable "domain" {

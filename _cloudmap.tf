@@ -1,7 +1,7 @@
 locals {
   cloudmap = {
     enable     = try(var.cloudmap.enable, false)
-    stage      = coalesce(try(var.cloudmap.stage, var.stage), var.stage)
+    stage      = coalesce(try(var.cloudmap.stage, var.stage), local.stage)
     deployment = coalesce(try(var.cloudmap.deployment, local.deployment), local.deployment) # Use main unless overridden by baseline-specific variable
   }
 }
