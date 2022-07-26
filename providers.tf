@@ -6,3 +6,11 @@ terraform {
     }
   }
 }
+
+provider "aws" {
+  alias = "account"
+}
+
+provider "aws" {
+  alias = "organization"
+}
