@@ -14,23 +14,23 @@ variable "stage" {
 #  description = "Deployment of the resource, e.g. main, b, c, d. Used only if baseline is deployment-specific"
 #}
 
-variable "network" {
-  description = "Enable outputs from network baseline. Override default stage and deployment if necessary."
-  default     = {
-    enable     = false
-    stage      = null
-    deployment = null
-  }
-}
-
-variable "ecs" {
-  description = "Enable outputs from ECS baseline. Override default stage and deployment if necessary."
-  default     = {
-    enable     = false
-    stage      = null
-    deployment = null
-  }
-}
+#variable "network" {
+#  description = "Enable outputs from network baseline. Override default stage and deployment if necessary."
+#  default     = {
+#    enable     = false
+#    stage      = null
+#    deployment = null
+#  }
+#}
+#
+#variable "ecs" {
+#  description = "Enable outputs from ECS baseline. Override default stage and deployment if necessary."
+#  default     = {
+#    enable     = false
+#    stage      = null
+#    deployment = null
+#  }
+#}
 
 variable "cloudmap" {
   description = "Enable outputs from CloudMap baseline. Override default stage and deployment if necessary."
