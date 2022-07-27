@@ -19,7 +19,6 @@ module "cloudmap" {
 output "cloudmap_namespace_id" {
   description = "CloudMap namespace ID"
   value       = try(module.cloudmap[0].cloudmap_namespace_id, null)
-  sensitive   = true
 }
 
 output "cloudmap_namespace_arn" {
