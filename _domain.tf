@@ -18,5 +18,4 @@ module "domain" {
 
 output "route53_public_domain_name" {
   value       = try(module.domain[0].route53_public_domain_name, null)
-  sensitive   = true
 }
