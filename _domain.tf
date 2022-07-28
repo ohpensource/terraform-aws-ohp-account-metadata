@@ -1,7 +1,7 @@
 locals {
   domain = {
     enable     = try(var.domain.enable, false)
-    stage      = coalesce(try(var.domain.stage, var.stage), local.stage)
+    stage      = coalesce(try(var.domain.stage, var.stage), try(module.metadata[0].stage, null))
     deployment = coalesce(try(var.domain.deployment, local.deployment), local.deployment) # Use main unless overridden by baseline-specific variable
   }
 }

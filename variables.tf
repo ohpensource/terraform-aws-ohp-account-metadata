@@ -3,9 +3,16 @@
 #  description = "The id of the aws account we want to extract the metadata from."
 #}
 
+variable "metadata" {
+  description = "Enable account metadata outputs, e.g. stage, client, account name). Enabled by default."
+  default = {
+    enable = true
+  }
+}
+
 variable "stage" {
   type        = string
-  description = "Stage of the outputs, e.g. dev, tst, acc, prd"
+  description = "Stage of the outputs, e.g. dev, tst, acc, prd. Set to override stage provided by metadata or if metadata.enable is false."
   default     = null
 }
 
