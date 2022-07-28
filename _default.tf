@@ -12,7 +12,7 @@ module "default" {
   stage      = local.default.stage
   deployment = local.default.deployment
   providers = {
-    aws = aws.account
+    aws.account = aws.account
     aws.organization = aws.organization
   }
 }
