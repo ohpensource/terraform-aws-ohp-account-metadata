@@ -11,7 +11,4 @@ module "network" {
   source     = "./baselines/network"
   stage      = local.network.stage
   deployment = local.network.deployment
-  providers = {
-    aws = aws.account
-  }
 }

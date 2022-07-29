@@ -1,8 +1,3 @@
-#variable "aws_account_id" {
-#  type        = string
-#  description = "The id of the aws account we want to extract the metadata from."
-#}
-
 variable "metadata" {
   description = "Enable account metadata outputs, e.g. stage, client, account name). Enabled by default."
   default = {

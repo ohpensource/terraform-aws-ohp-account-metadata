@@ -1,6 +1,4 @@
-data "aws_iam_account_alias" "main" {
-  provider = aws.account
-}
+data "aws_iam_account_alias" "main" {}
 
 locals {
   account_alias = data.aws_iam_account_alias.main.account_alias

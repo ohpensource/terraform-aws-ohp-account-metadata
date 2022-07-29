@@ -11,7 +11,4 @@ module "ecs" {
   source     = "./baselines/ecs"
   stage      = local.ecs.stage
   deployment = local.ecs.deployment
-  providers = {
-    aws = aws.account
-  }
 }

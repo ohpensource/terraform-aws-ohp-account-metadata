@@ -11,9 +11,6 @@ module "domain" {
   source     = "./baselines/domain"
   stage      = local.domain.stage
   deployment = local.domain.deployment
-  providers = {
-    aws = aws.account
-  }
 }
 
 output "route53_public_domain_name" {

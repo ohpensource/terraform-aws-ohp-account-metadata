@@ -11,9 +11,6 @@ module "cloudmap" {
   source     = "./baselines/cloudmap"
   stage      = local.cloudmap.stage
   deployment = local.cloudmap.deployment
-  providers = {
-    aws = aws.account
-  }
 }
 
 output "cloudmap_namespace_id" {

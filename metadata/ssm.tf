@@ -12,6 +12,12 @@ locals {
         ssm_parameter_name = "/account-metadata/stage"
       }
     }
+    account_name = {
+      exposed_via = local.ssm
+      configuration = {
+        ssm_parameter_name = "/account-metadata/account-name"
+      }
+    }
   }
   ssm              = "ssm"
   main_ssm_keys    = compact([for k, v in local.main_metadata : v.exposed_via == local.ssm ? k : ""])
@@ -20,7 +26,6 @@ locals {
 }
 
 data "aws_ssm_parameter" "main" {
-  provider = aws.account
   for_each = local.main_ssm_map
   name     = each.value.ssm_parameter_name
 }

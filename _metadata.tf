@@ -1,32 +1,34 @@
 module "metadata" {
   count     = var.metadata.enable ? 1 : 0
   source    = "./metadata"
-  providers = {
-    aws.account = aws.account
-    aws.organization = aws.organization
-  }
 }
 
 output "metadata" {
-  value = try(module.metadata[0].metadata, null)
+  description = "Metadata object"
+  value       = try(module.metadata[0].metadata, null)
 }
 
 output "client" {
-  value = try(module.metadata[0].metadata["client"], null)
+  description = "Client"
+  value       = try(module.metadata[0].metadata["client"], null)
 }
 
 output "stage" {
-  value = try(module.metadata[0].metadata["stage"], null)
+  description = "Stage"
+  value       = try(module.metadata[0].metadata["stage"], null)
 }
 
-output "alias" {
-  value = try(module.metadata[0].alias, null)
+output "account_alias" {
+  description = "Account alias"
+  value       = try(module.metadata[0].account_alias, null)
 }
 
-output "id" {
-  value = try(module.metadata[0].id, null)
+output "account_id" {
+  description = "Account ID"
+  value       = try(module.metadata[0].account_id, null)
 }
 
-output "name" {
-  value = try(module.metadata[0].name, null)
+output "account_name" {
+  description = "Account name as visible in organization"
+  value       = try(module.metadata[0].account_name, null)
 }

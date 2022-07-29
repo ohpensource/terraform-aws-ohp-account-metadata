@@ -11,7 +11,4 @@ module "default" {
   source     = "./baselines/default"
   stage      = local.default.stage
   deployment = local.default.deployment
-  providers = {
-    aws = aws.account
-  }
 }

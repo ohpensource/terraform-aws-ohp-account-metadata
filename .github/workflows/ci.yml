@@ -38,7 +38,7 @@ jobs:
       - uses: ohpensource/terraform-validate-gh-action/action@0.0.0.1
         name: validate-terraform
         with:
-          terraform-folder: "./validation/"
+          terraform-folder: "./"
           use-backend: "false"
 
   validate-security:
