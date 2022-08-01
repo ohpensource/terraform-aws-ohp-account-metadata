@@ -16,3 +16,11 @@ jobs:
           user-email: "github-actions@github.com"
           user-name: "github-actions"
           version-prefix: "v"
+      - uses: terraform-docs/gh-actions@v1.0.0
+        name: Render terraform docs
+        with:
+          working-dir: .
+          git-commit-message: "[tfm-docs][skip ci] - updating terraform docs"
+          output-file: README.md
+          output-method: inject
+          git-push: "true"

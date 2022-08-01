@@ -1,7 +1,7 @@
 locals {
   default = {
     enable     = try(var.default.enable, false)
-    stage      = coalesce(try(var.default.stage, var.stage), try(module.metadata[0].stage, null))
+    stage      = coalesce(try(var.default.stage, null), try(var.stage, null), try(module.metadata[0].stage, null))
     deployment = coalesce(try(var.default.deployment, local.deployment), local.deployment) # Use main unless overridden by baseline-specific variable
   }
 }

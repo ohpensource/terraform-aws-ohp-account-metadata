@@ -1,122 +1,170 @@
 # terraform-aws-ohp-account-metadata
 
-Terraform module to retrieve AWS account metadata
+Terraform module to retrieve and output AWS account metadata and baseline resources
 
-- [Introduction](#introduction)
-
+<!-- TOC -->
+* [terraform-aws-ohp-account-metadata](#terraform-aws-ohp-account-metadata)
+  * [Introduction](#introduction)
+    * [Metadata](#metadata)
+    * [Baseline](#baseline)
+  * [How to use](#how-to-use)
+    * [Examples](#examples)
+      * [Output only account metadata](#output-only-account-metadata)
+      * [Output account metadata and info from CloudMap baseline](#output-account-metadata-and-info-from-cloudmap-baseline)
+    * [Overriding stage and deployment](#overriding-stage-and-deployment)
+      * [Override default stage](#override-default-stage)
+      * [Override stage/deployment per baseline](#override-stagedeployment-per-baseline)
+      * [Overriding inputs hierarchy](#overriding-inputs-hierarchy)
+  * [How to contribute](#how-to-contribute)
+  * [Baselines](#baselines)
+    * [Current situation](#current-situation)
+    * [Solution](#solution)
+    * [Comparison](#comparison)
+      * [Variables](#variables)
+      * [Data](#data)
+      * [Output module](#output-module)
+    * [Prerequisites](#prerequisites)
+    * [Module inputs](#module-inputs)
+<!-- TOC -->
 ## Introduction
+This module facilitates the output of (meta)data related to the AWS account you are deploying to.   
+Thanks to this module, you don't have to fetch account metadata or resource IDs, ARNs, names, IPs manually or via separate data sources.
+After specifying a few simple inputs, the module will retrieve them for you in the form of outputs that you can reference in your Terraform code.
 
-This module allows you to centralize all (meta)data related to the AWS account you are deploying to. This project seeks to abstract the available metadata into one module that lets you deploy a terraform configuration by providing your AWS account id as input.
+![img.png](images/solution_diagram.png)
 
-All metadata will be exposed in a map that can be consumed in your terraform configuration.
+### Metadata
+Metadata is useful information about the account - client, stage, AWS account id, AWS account name etc.
+Metadata retrieval is enabled by default.
 
-## TODO: Exposed metadata
-
-## TODO: Examples
-
-
-## Baselines
-### Current situation
-- Developers/Cloud Engineering must manually input resource IDs, ARNs, names into tfvars
-- SSM parameters, data, secrets as possible sources of information
-
-### Solution
-- Module that will expose baseline resources
+### Baselines
+Baselines are AWS modules that create standard infrastructure in our AWS accounts and are usable by multiple applications.   
+Examples:
   - VPC
   - subnets
   - domains
   - ECS clusters
+  - CloudMap namespace
   - ...
-- User defines what he wants, doesn't see how he gets it
-  - Module gets the information (data, ssm, secret...) and provides it as output
 
-### Comparison
-#### Variables
-Values must be inputted by responsible person - requires manual work, lengthier config files.
-```hcl
-variable "vpc_id" {
-  type = "String"
-  default = "vpc-123456"
-}
-variable "hosted_zone_id" {
-  type = "String"
-  default = "ZQJSDFSFOPJIW"
-}
+After providing the correct inputs, you should receive the correct resource outputs for the given baseline.
+Baseline retrieval is disabled by default, and can be enabled per baseline.
 
-resource "aws_subnet" {
-  vpc_id = var.vpc_id
-}
-resource "aws_route53_record" "" {
-  ...
-  zone_id = "var.hosted_zone_id"
-}
-```
-#### Data
-Data can take unified inputs, doesn't require search for values.
-Data must be created per resource. Same goes for SSM, secrets etc.
-```hcl
-data "aws_vpc" "vpc" {
-  tags = {
-    Stage = var.stage
-    Deployment = var.deployment
-  }
-}
-data "aws_route53_zone" "zone" {
-  tags = {
-    Stage = var.stage
-    Deployment = var.deployment
-  }
-}
+## How to use
+1. Read the documentation to check which inputs and outputs are available
+2. Call module in your Terraform code
+3. Use outputs from the module in your locals and resources
+   1. If your IDE allows it, code completion can be used for module outputs, simplifying writing the code
 
-resource "aws_subnet" {
-  vpc_id = data.vpc.id
-}
-resource "aws_route53_record" "" {
-  ...
-  zone_id = "data.zone.id"
-}
-```
-
-#### Output module
-One module definition in the code.
-Module retrieves value in the background - from data, SSM, secret etc.
-Code auto-completion possible.
-
+### Examples
+#### Output only account metadata
+Metadata is retrieved without the necessity of providing any inputs.
 ```hcl
 module "account_metadata" {
-  stage = var.stage
-  deployment = var.deployment
+  source = "git::github.com/ohpensource/terraform-aws-ohp-account-metadata.git?ref=<version>"
 }
-
-resource "aws_subnet" {
-  vpc_id = module.account_metadata.vpc_id
+locals {
+  account_id = module.account_metadata.account_id
 }
-resource "aws_route53_record" "" {
-  ...
-  zone_id = module.account_metadata.route53_zone_id
+```
+#### Output account metadata and info from CloudMap baseline
+Call the module from within your Terraform code. Define which outputs you want to enable.
+```hcl
+module "account_metadata" {
+  source = "git::github.com/ohpensource/terraform-aws-ohp-account-metadata.git?ref=<version>"
+  cloudmap = {
+    enable = true
+  }
+}
+resource "aws_service_discovery_service" "example" {
+  name = "example"
+  namespace_id = module.account_metadata.cloudmap_namespace_id
 }
 ```
 
-### Prerequisites
-- One stage and deployment cannot have two resources of the same kind
-- Unified naming of resources
-  - SSM
-    - prefix /stage/deployment
-  - Secret
-    - ???
-  - Tags
-    - Stage
-    - Deployment
-- Recommended that consuming modules also have backup variables that can override value provided by module,  
-e.g. ```try(var.vpc_id, output_module.outputs.vpc_id)```
-- Some baselines can be deployed once per account, some once per stage, some once per deployment. Outputs module must control for which resources inputted stage and deployment can be overridden to get the correct resource.
-- Backwards compatibility must be ensured
+### Overriding stage and deployment
+An AWS account will usually contain baselines only for one stage and one default deployment.
+Under these standar circumstances, this module retrieves the stage of the account for you, minimizing your required inputs.   
+   
+Some accounts, however, may contain baselines from multiple stages, or multiple deployments. In order to fetch the correct data, you need to provide the correct inputs.
 
-### Module inputs
-Our accounts are client-specific. The two distinguishing attributes for retrieving the correct information are
-**stage** and **deployment**.
+#### Override default stage
+Best used in an account with multiple stages (tst, acc, prd).
+Module will use your defined stage instead of the default stage of the AWS account for retrieving baseline outputs.
+In case metadata functionality is disabled, you must provide a stage value.
+```hcl
+module "account_metadata" {
+  source = "git::github.com/ohpensource/terraform-aws-ohp-account-metadata.git?ref=<version>"
+  stage = "tst" # Overrides value retrieved by module
+  cloudmap = {
+    enable = true
+  }
+}
+```
+#### Override stage/deployment per baseline
+In some very special cases (e.g. development), you may need baselines with a combination of stages and deployments.
+```hcl
+module "account_metadata" {
+  source = "git::github.com/ohpensource/terraform-aws-ohp-account-metadata.git?ref=<version>"
+  stage = "tst" # Overrides default stage retrieved by module
+  cloudmap = {
+    enable = true # Uses stage from stage variable and default deployment
+  }
+  network = {
+    enable = true
+    stage  = "dev" # Overrides stage
+  }
+  domain = {
+    enable     = true
+    deployment = "b" # Overrides default value "main", uses stage
+  }
+  ecs = {
+    enable     = true
+    stage      = "acc" # Overrides stage
+    deployment = "c"   # Overrides default value "main"
+  }
+}
+```
+#### Overriding inputs hierarchy 
+1. If stage or deployment are specified on baseline variable level (e.g. CloudMap), they take precedence
+2. If stage is specified, it overrides default stage retrieved by this module from account metadata
+3. If no special stage and deployment are specified, stage is retrieved by this module, and default deployment "main" is used
 
-| Variable   | Description                                      | Required | Default |
-|------------|--------------------------------------------------|----------|---------|
-| stage      | Stage of the resources - e.g. dev, tst, acc, prd | yes      | N/A     |
-| deployment | Deployment in a stage - e.g. main, a, b, c       | no       | main    |
+#### Variable standard
+Given that overriding may be a reality for the deployment of your application, best prepare for it.
+Look into the example repo, for a variable and module call, that you may copy-paste and update as you need.
+
+## How to contribute
+1. Create a PR
+2. Request review from codeowners
+3. If approved, merge
+
+### Metadata output module
+- In separate submodule
+- in metadata directory
+- Requires no inputs
+### Baseline output modules
+- Retrieval of data is in separate submodules, currently in this repo
+- Metadata in metadata directory
+  - Requires no inputs, retrieved metadata may be used by other submodules, e.g. stage
+- Baselines in baselines directory
+  ![img.png](images/baselines_directory_structure.png) 
+  - Stage and deployment mandatory variables
+  - Data source definitions should be here
+  - Outputs which are passed down to the main module
+
+### Files
+- Add variables into variables.tf file
+- If you are adding a new baseline, create a _baseline_name.tf file for it
+  - Add baseline output module call, locals and final outputs in the file
+
+### Output standard
+- Output names should make it clear what they are outputting
+- Description should be in format "baseline - wordier description" for a pleasant documentation reading experience
+- Use [try](https://www.terraform.io/language/functions/try) to provide a default value (e.g. null)
+```hcl
+output "cloudmap_read_write_policy_arn" {
+  description = "cloudmap - CloudMap read-write IAM policy ARN"
+  value       = try(module.cloudmap[0].cloudmap_read_write_policy_arn, null)
+}
+```
