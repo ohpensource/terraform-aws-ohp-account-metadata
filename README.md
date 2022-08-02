@@ -51,7 +51,7 @@ Baseline retrieval is disabled by default, and can be enabled per baseline.
 2. Call module in your Terraform code
 3. Use outputs from the module in your locals and resources
    1. If your IDE allows it, code completion can be used for module outputs, simplifying writing the code
-
+   2. Outputs have a default value, mostly null - in case output module is disabled, use [coalesce](https://www.terraform.io/language/functions/coalesce) to set a manual value, e.g. coalesce(module.account_metadata.account_id, var.account_id). In the example, var.account_id, only needs a value set, if module output is null.
 ### Examples
 #### Output only account metadata
 Metadata is retrieved without the necessity of providing any inputs.
@@ -60,7 +60,7 @@ module "account_metadata" {
   source = "git::github.com/ohpensource/terraform-aws-ohp-account-metadata.git?ref=<version>"
 }
 locals {
-  account_id = module.account_metadata.account_id
+  account_id = coalesce(module.account_metadata.account_id, var.account_id)
 }
 ```
 #### Output account metadata and info from CloudMap baseline
@@ -74,13 +74,13 @@ module "account_metadata" {
 }
 resource "aws_service_discovery_service" "example" {
   name = "example"
-  namespace_id = module.account_metadata.cloudmap_namespace_id
+  namespace_id = coalesce(module.account_metadata.cloudmap_namespace_id, var.cloudmap_namespace_id)
 }
 ```
 
 ### Overriding stage and deployment
 An AWS account will usually contain baselines only for one stage and one default deployment.
-Under these standar circumstances, this module retrieves the stage of the account for you, minimizing your required inputs.   
+Under these standard circumstances, this module retrieves the stage of the account for you, minimizing your required inputs.   
    
 Some accounts, however, may contain baselines from multiple stages, or multiple deployments. In order to fetch the correct data, you need to provide the correct inputs.
 
