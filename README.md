@@ -131,6 +131,20 @@ module "account_metadata" {
 Given that overriding may be a reality for the deployment of your application, best prepare for it.
 Look into the example repo, for a variable and module call, that you may copy-paste and update as you need.
 
+### Provider considerations
+If you are setting default provider tags with outputs retrieved by this module, you must [create a separate provider](https://www.terraform.io/language/modules/develop/providers) with an alias and add it to the providers section of the module call.
+```hcl
+provider "aws" {
+  alias = "account_metadata_provider"
+}
+module "account_metadata" {
+  source = "git::github.com/ohpensource/terraform-aws-ohp-account-metadata.git?ref=<version>"
+  providers = {
+    aws = aws.account_metadata_provider
+  }
+}
+```
+
 ## How to contribute
 1. Create a PR
 2. Request review from codeowners
@@ -144,7 +158,7 @@ Look into the example repo, for a variable and module call, that you may copy-pa
 - Retrieval of data is in separate submodules, currently in this repo
 - Metadata in metadata directory
   - Requires no inputs, retrieved metadata may be used by other submodules, e.g. stage
-- Baselines in baselines directory
+- Baselines in baselines directory   
   ![img.png](images/baselines_directory_structure.png) 
   - Stage and deployment mandatory variables
   - Data source definitions should be here
