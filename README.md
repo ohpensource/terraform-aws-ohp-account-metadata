@@ -49,6 +49,7 @@ Baseline retrieval is disabled by default, and can be enabled per baseline.
 ## How to use
 1. Read the documentation to check which inputs and outputs are available
 2. Call module in your Terraform code
+   1. Check the snippets in [example](example) directory for how to best use this module
 3. Use outputs from the module in your locals and resources
    1. If your IDE allows it, code completion can be used for module outputs, simplifying writing the code
    2. Outputs have a default value, mostly null - in case output module is disabled, use [coalesce](https://www.terraform.io/language/functions/coalesce) to set a manual value, e.g. coalesce(module.account_metadata.account_id, var.account_id). In the example, var.account_id, only needs a value set, if module output is null.
