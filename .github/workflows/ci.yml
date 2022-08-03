@@ -30,3 +30,20 @@ jobs:
         with:
           base-branch: $GITHUB_BASE_REF
           pr-branch: $GITHUB_HEAD_REF
+
+  validate-iac:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ohpensource/terraform-validate-gh-action/action@0.0.0.1
+        name: validate-terraform
+        with:
+          terraform-folder: "./"
+          use-backend: "false"
+
+  validate-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aquasecurity/tfsec-action@v1.0.2
+        name: analyse-security

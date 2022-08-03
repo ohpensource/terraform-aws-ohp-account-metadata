@@ -13,7 +13,6 @@ locals {
 }
 
 data "aws_ssm_parameter" "secondary" {
-  provider = aws.account
   for_each = local.secondary_ssm_map
   name     = each.value.ssm_parameter_name
 }
