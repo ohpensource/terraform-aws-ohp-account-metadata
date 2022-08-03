@@ -1,9 +1,9 @@
 locals {
   output_metadata = merge(local.main_ssm,
     local.secondary_ssm,
-    { name = local.account_name },
     { alias = local.account_alias },
-  { id = var.aws_account_id })
+    { id = data.aws_caller_identity.current.account_id }
+  )
 }
 
 output "metadata" {
@@ -27,9 +27,9 @@ output "alias" {
 }
 
 output "id" {
-  value = var.aws_account_id
+  value = data.aws_caller_identity.current.account_id
 }
 
 output "name" {
-  value = local.account_name
+  value = local.output_metadata["account_name"]
 }
