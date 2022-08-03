@@ -1,6 +1,5 @@
 locals {
   output_metadata = merge(local.main_ssm,
-    local.secondary_ssm,
     { alias = local.account_alias },
     { id = data.aws_caller_identity.current.account_id }
   )
@@ -18,18 +17,14 @@ output "stage" {
   value = local.output_metadata["stage"]
 }
 
-output "public_domain" {
-  value = local.output_metadata["public_domain"]
-}
-
-output "alias" {
+output "account_alias" {
   value = local.account_alias
 }
 
-output "id" {
+output "account_id" {
   value = data.aws_caller_identity.current.account_id
 }
 
-output "name" {
+output "account_name" {
   value = local.output_metadata["account_name"]
 }
