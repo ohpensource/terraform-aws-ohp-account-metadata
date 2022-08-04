@@ -179,3 +179,43 @@ output "cloudmap_read_write_policy_arn" {
   value       = try(module.cloudmap[0].cloudmap_read_write_policy_arn, null)
 }
 ```
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+No providers.
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_domain"></a> [domain](#module\_domain) | ./baselines/domain | n/a |
+| <a name="module_metadata"></a> [metadata](#module\_metadata) | ./metadata | n/a |
+
+## Resources
+
+No resources.
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_domain"></a> [domain](#input\_domain) | Enable outputs from domain baseline. Override default stage and deployment if necessary. | `map` | <pre>{<br>  "deployment": null,<br>  "enable": false,<br>  "stage": null<br>}</pre> | no |
+| <a name="input_metadata"></a> [metadata](#input\_metadata) | Enable account metadata outputs, e.g. stage, client, account name. Enabled by default. | `map` | <pre>{<br>  "enable": true<br>}</pre> | no |
+| <a name="input_stage"></a> [stage](#input\_stage) | Stage of the outputs, e.g. dev, tst, acc, prd. Set to override stage provided by metadata or if metadata.enable is false. | `string` | `null` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_account_alias"></a> [account\_alias](#output\_account\_alias) | metadata - Account alias |
+| <a name="output_account_id"></a> [account\_id](#output\_account\_id) | metadata - Account ID |
+| <a name="output_account_name"></a> [account\_name](#output\_account\_name) | metadata - Account name as visible in organization |
+| <a name="output_client"></a> [client](#output\_client) | metadata - Client |
+| <a name="output_metadata"></a> [metadata](#output\_metadata) | metadata - Metadata object |
+| <a name="output_route53_public_domain_name"></a> [route53\_public\_domain\_name](#output\_route53\_public\_domain\_name) | domain - Route53 public domain name |
+| <a name="output_stage"></a> [stage](#output\_stage) | metadata - Stage |
+<!-- END_TF_DOCS -->
