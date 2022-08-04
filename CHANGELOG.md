@@ -1,3 +1,12 @@
+# :confetti_ball: 2.0.0 (2022-08-04T07:21:35.776Z)
+- - -
+## :boom: BREAKING CHANGES
+* LANZ-2766 Move to Route53 domain to baseline, rename outputs
+## :newspaper: Others
+* docs: LANZ-2766 Add link to example directory
+* docs: LANZ-2766 Add info about provider
+- - -
+- - -
 # :confetti_ball: 1.1.0 (2022-08-03T11:10:56.318Z)
 - - -
 ## :hammer: Features
